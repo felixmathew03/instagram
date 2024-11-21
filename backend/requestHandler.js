@@ -9,12 +9,18 @@ const transporter = nodemailer.createTransport({
       user: "felixmathewt@gmail.com",
       pass: "qwvy rccu lwjz rmal",
     },
-  });
+});
+
+export async function home(req,res) {
+    
+}
 
 export async function verifyEmail(req,res) {
-    console.log(req.body);
-    
     const {email}=req.body;
+    const user=await userSchema.findOne({email});
+    console.log(user);
+    // if(user)
+    //     return res.status(403).send({msg:"Unauthorized acces"});
      // send mail with defined transport object
     const info = await transporter.sendMail({
         from: '"Hai 👻" <hai@gmail.com>', // sender address
@@ -71,7 +77,7 @@ export async function verifyEmail(req,res) {
     });
     // console.log("Message sent: %s", info.messageId);
     // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
-    userSchema.create({email}).then(()=>{
+    userSchema.create({email,account:"new"}).then(()=>{
         return res.status(201).send({msg:"Confirmation mail succefully sent",email});
     }).catch((error)=>{
         return res.status(404).send({msg:"Error occured"})
@@ -79,18 +85,17 @@ export async function verifyEmail(req,res) {
 }
 export async function signUp(req,res) {
     try {
-        
         const {email,username,password,cpassword}=req.body;
         console.log(email,username,password,cpassword);
         if(!(email&&username&&password&&cpassword))
             return res.status(404).send({msg:"fields are empty"});
         if(password!==cpassword)
             return res.status(404).send({msg:"password not matched"})
-        userSchema.findOne({email:email}).then((e)=>{
+        userSchema.findOne({$and:[{email:email},{account:"new"}]}).then((e)=>{
             console.log(e);
             bcrypt.hash(password,10).then((hashedPassword)=>{
                 console.log(hashedPassword);
-                userSchema.updateOne({email},{$set:{username,password:hashedPassword}}).then(()=>{
+                userSchema.updateOne({email},{$set:{username,password:hashedPassword,account:""}}).then(()=>{
                     return res.status(201).send({msg:"success"});
                 }).catch((error)=>{
                     return res.status(404).send({msg:"Not registered"})

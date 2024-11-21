@@ -6,13 +6,9 @@ function Email() {
   const navigate=useNavigate();
   const [email, setEmail] = useState(''); 
 
-  const handleEmailChange = (event) => {
+  const handleChange = (event) => {
     setEmail(event.target.value);
   };
-  const handleChange=(e)=>{
-    // console.log(e.target.value);
-    setEmp((pre)=>({...pre,[e.target.name]:e.target.value}))
-  }
   const handleSubmit = async(event) => {
     event.preventDefault(); 
     const res=await fetch("http://localhost:3000/api/verifyemail",{
@@ -39,7 +35,7 @@ function Email() {
       <h1>Email Verification</h1>
       <form onSubmit={handleSubmit}>
           <label htmlFor="email">Email</label>
-          <input type="email" id="email" value={email} onChange={handleEmailChange} placeholder="Enter your email" />
+          <input type="email" id="email" value={email} onChange={handleChange} placeholder="Enter your email" />
         <button type="submit">Verify</button>
       </form>
     </div>
