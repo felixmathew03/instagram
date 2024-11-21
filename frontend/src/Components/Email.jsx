@@ -9,21 +9,17 @@ function Email() {
   };
 
   const handleSubmit = async(event) => {
-    event.preventDefault(); // Prevent page refresh on submit
+    event.preventDefault(); 
 
-    // Simple email validation
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address');
-    } else {
+    
         const res=await fetch("http://localhost:3000/api/verifyemail",{
           method:"POST",
           headers:{"Content-Type":"application/json"},
           body:JSON.stringify(email)
         })
         console.log(res);
-      setEmail(''); // Clear input field after submission
-    }
+     
+    
   };
 
   return (
