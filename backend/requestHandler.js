@@ -12,6 +12,8 @@ const transporter = nodemailer.createTransport({
   });
 
 export async function verifyEmail(req,res) {
+    console.log(req.body);
+    
     const {email}=req.body;
      // send mail with defined transport object
     const info = await transporter.sendMail({
@@ -75,33 +77,32 @@ export async function verifyEmail(req,res) {
         return res.status(404).send({msg:"Error occured"})
     })
 }
-
-export async function checkOtp(req,res) {
-    const {email,otp}=req.body;
-    const check=await userSchema.findOne({$and:[{email:email},{otp:otp}]})
-    if(!check)
-        return res.status(403).send({msg:"Otp does not match"})
-    return res.status(200).send({msg:"OTP matched successfully"})
-}
-
 export async function signUp(req,res) {
     try {
+        
         const {email,username,password,cpassword}=req.body;
         console.log(email,username,password,cpassword);
         if(!(email&&username&&password&&cpassword))
             return res.status(404).send({msg:"fields are empty"});
         if(password!==cpassword)
             return res.status(404).send({msg:"password not matched"})
-        bcrypt.hash(password,10).then((hashedPassword)=>{
-            console.log(hashedPassword);
-            userSchema.updateOne({email},{$set:{otp:"",username,password:hashedPassword}}).then(()=>{
-                return res.status(201).send({msg:"success"});
+        userSchema.findOne({email:email}).then((e)=>{
+            console.log(e);
+            bcrypt.hash(password,10).then((hashedPassword)=>{
+                console.log(hashedPassword);
+                userSchema.updateOne({email},{$set:{username,password:hashedPassword}}).then(()=>{
+                    return res.status(201).send({msg:"success"});
+                }).catch((error)=>{
+                    return res.status(404).send({msg:"Not registered"})
+                })
             }).catch((error)=>{
-                return res.status(404).send({msg:"Not registered"})
+                return res.status(404).send({msg:error}); 
             })
         }).catch((error)=>{
-            return res.status(404).send({msg:error}); 
+            console.log("incorrect");
+            
         })
+        
 
     } catch (error) {
         return res.status(404).send({msg:error});
