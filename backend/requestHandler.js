@@ -85,6 +85,7 @@ export async function verifyEmail(req,res) {
 }
 export async function signUp(req,res) {
     try {
+        const {...user}=req.body;
         const {email,username,password,cpassword}=req.body;
         console.log(email,username,password,cpassword);
         if(!(email&&username&&password&&cpassword))
@@ -107,20 +108,16 @@ export async function signUp(req,res) {
             console.log("incorrect");
             
         })
-        
-
     } catch (error) {
         return res.status(404).send({msg:error});
     }
 }
 
 export async function signIn(req,res) {
-    console.log(req.body);
     const {email,password}=req.body;
     if(!(email&&password))
         return res.status(404).send({msg:"feilds are empty"})
     const user=await userSchema.findOne({email})
-    console.log(user);
     if(user===null)
         return res.status(404).send({msg:"invalid email"})
 
