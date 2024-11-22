@@ -91,7 +91,7 @@ export async function signUp(req,res) {
             return res.status(404).send({msg:"fields are empty"});
         if(password!==cpassword)
             return res.status(404).send({msg:"password not matched"})
-        userSchema.findOne({$and:[{email:email},{account:"new"}]}).then((e)=>{
+        userSchema.findOne({email:email}).then((e)=>{
             console.log(e);
             bcrypt.hash(password,10).then((hashedPassword)=>{
                 console.log(hashedPassword);
