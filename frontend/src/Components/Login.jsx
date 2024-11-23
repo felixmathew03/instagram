@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {Link,useNavigate} from "react-router-dom"
-import '../css/Login.css'; // Import the CSS file for styling
+import '../css/Login.scss'; // Import the CSS file for styling
 
 function Login() {
   const navigate=useNavigate();
@@ -18,7 +18,7 @@ function Login() {
     console.log(res);
     const result=await res.json();
     if(res.status===200){
-      sessionStorage.setItem("Auth",result.token)
+      localStorage.setItem("Auth",result.token)
       alert(result.msg)
       navigate('/')
     }
@@ -30,7 +30,8 @@ function Login() {
     setDetails((pre)=>({...pre,[e.target.name]:e.target.value}))
   }
   return (
-    <div className="login-container">
+    <div className="Login">
+      <div className="login-container">
       <div className="login-box">
         <h2>Instagram</h2>
         <form onSubmit={handleSubmit} className="login-form">
@@ -43,6 +44,7 @@ function Login() {
           <p>Don't have an account? <Link to={'/email'}>Sign up</Link></p>
         </div>
       </div>
+    </div>
     </div>
   );
 }

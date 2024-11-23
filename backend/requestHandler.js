@@ -12,7 +12,19 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function home(req,res) {
-    
+    try {
+        console.log("home");
+        console.log(req.user.userId);
+        const _id=req.user.userId;
+        const user=await userSchema.findOne({_id});
+        console.log(user);
+        if(!user)
+            return res.status(403).send({msg:"Unauthorized acces"});
+        res.status(200).send({username:user.username})
+        
+    } catch (error) {
+        res.status(404).send({msg:"error"})
+    }
 }
 
 export async function verifyEmail(req,res) {
@@ -120,14 +132,13 @@ export async function signIn(req,res) {
     const user=await userSchema.findOne({email})
     if(user===null)
         return res.status(404).send({msg:"invalid email"})
-
     //convert to hash and compare using bcrypt
     const success=await bcrypt.compare(password,user.password);
     console.log(success);
     if(success!==true)
         return res.status(404).send({msg:"email or password is invalid"})
     //generate token using sign(JWT key)
-    const token=await sign({userId:user._id},process.env.JWT_KEY,{expiresIn:"24h"});
+    const token=await sign({userId:user._id},process.env.JWT_KEY,{expiresIn:"5s"});
     console.log(token);
     return res.status(200).send({msg:"Succefully logged in",token})
 }

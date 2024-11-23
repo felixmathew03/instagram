@@ -1,14 +1,40 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-const Home = () => {
+import axios from 'axios';
+
+const Home = ({setUser}) => {
   const navigate=useNavigate();
-  let auth;
+  const value=localStorage.getItem('Auth');
+  // const [username,setUserName]=useState("")
   useEffect(()=>{
-    auth=sessionStorage.getItem('Auth');
-    if (auth===null) {
+    getDetails();
+  })
+  const getDetails=async()=>{
+    if(value!==null){
+    try {
+      const res=await axios.get("http://localhost:3000/api/home",{headers:{"Authorization":`Bearer ${value}`}})
+    console.log(res);
+    if (res.status==200) {
+      // setUserName(res.data.username);
+      setUser(res.data.username)
+    }else if (res.status==403){
+      alert(res.data.msg);
       navigate('/login')
     }
-  })
+    else{
+      navigate('/login')
+    }
+    } catch (error) {
+      console.log("error");
+      navigate('/login')
+    }
+    }else{
+      navigate('/login')
+    }
+  }
+
+  // console.log(username);
+  
   return (
     <div className="nav">
         <h1>Home</h1>
