@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {useNavigate} from 'react-router-dom';
-import '../css/Email.scss';
+import './Email.scss';
 import axios from 'axios'
 function Email() {
   const navigate=useNavigate();
@@ -17,9 +17,6 @@ function Email() {
     //   body:JSON.stringify({email})
     // })
     const res=await axios.post("http://localhost:3000/api/verifyemail",{email},{Headers:{"Content-Type":"application/json"}});
-    console.log(res);
-    
-    console.log(res.data.msg);
     // const result=await res.json();
     if(res.status===201){
       localStorage.setItem('email',email);

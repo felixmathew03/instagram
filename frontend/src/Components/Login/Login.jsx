@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import {Link,useNavigate} from "react-router-dom"
-import '../css/Login.scss'; // Import the CSS file for styling
+import './Login.scss'; 
+import img1 from './img/screenshot3.png'
+import img2 from './img/c5Rp7Ym-Klz.png'
+import img3 from './img/EHY6QnZYdNX.png'
 
 function Login() {
   const navigate=useNavigate();
@@ -15,7 +18,6 @@ function Login() {
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(loginDetails)
     })
-    console.log(res);
     const result=await res.json();
     if(res.status===200){
       localStorage.setItem("Auth",result.token)
@@ -31,6 +33,9 @@ function Login() {
   }
   return (
     <div className="Login">
+      <div className="img">
+        <img src={img1} alt="" />
+      </div>
       <div className="login-container">
       <div className="login-box">
         <h2>Instagram</h2>
@@ -39,10 +44,20 @@ function Login() {
           <input type="password" placeholder="Password" value={loginDetails.password} name='password' onChange={handleChange} className="input-field" />
           <button type="submit" className="login-btn">Log In</button>
         </form>
-        <div className="login-footer">
-          <p>Forgotten your password?</p>
-          <p>Don't have an account? <Link to={'/email'}>Sign up</Link></p>
+        <div className="or">
+          <div className="blank"></div>
+          <div className="cont">OR</div>
+          <div className="blank"></div>
         </div>
+        <p>Forgot password?</p>
+      </div>
+      <div className="login-footer">
+        <p>Don't have an account? <Link to={'/email'}>Sign up</Link></p>
+      </div>
+      <p>Get the app.</p>
+      <div className="geta">
+        <img src={img2} alt="" />
+        <img src={img3} alt="" />
       </div>
     </div>
     </div>

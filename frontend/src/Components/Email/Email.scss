@@ -1,10 +1,14 @@
 .Email {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-align: center;
   background-color: #fafafa; /* Light background color similar to Instagram */
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
- width: 400px;
+  width: 400px;
   margin-left: auto;
   margin-right: auto;
   h1 {

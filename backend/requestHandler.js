@@ -1,4 +1,6 @@
 import userSchema from "./models/user.model.js";
+import profileSchema from './models/profile.model.js';
+import postSchema from './models/post.model.js';
 import bcrypt from "bcrypt";
 import pkg from "jsonwebtoken";
 import nodemailer from "nodemailer";
@@ -13,26 +15,48 @@ const transporter = nodemailer.createTransport({
 
 export async function home(req,res) {
     try {
-        console.log("home");
-        console.log(req.user.userId);
         const _id=req.user.userId;
         const user=await userSchema.findOne({_id});
-        console.log(user);
+        const profile=await profileSchema.findOne({userId:_id});
         if(!user)
             return res.status(403).send({msg:"Unauthorized acces"});
-        res.status(200).send({username:user.username})
+        res.status(200).send({username:user.username,profile})
         
     } catch (error) {
         res.status(404).send({msg:"error"})
     }
 }
 
+export async function profile(req,res) {
+    try {
+        const _id=req.user.userId;
+        const user=await userSchema.findOne({_id});
+        if(!user)
+            return res.status(403).send({msg:"Unauthorized acces"});
+        const profile=await profileSchema.findOne({userId:_id})
+        res.status(200).send({username:user.username,profile})
+        
+    } catch (error) {
+        res.status(404).send({msg:"error"})
+    }
+}
+
+export async function editUser(req,res) {
+    try {
+    const {...user}=req.body;
+    const data=await profileSchema.updateOne({userId:user.userId},{$set:{...user}});
+    res.status(201).send({msg:"updated"});
+    } catch (error) {
+        res.status(404).send({msg:"error"})
+    }
+    
+}
+
 export async function verifyEmail(req,res) {
     const {email}=req.body;
     const user=await userSchema.findOne({email});
-    console.log(user);
-    // if(user)
-    //     return res.status(403).send({msg:"Unauthorized acces"});
+    if(user)
+        return res.status(403).send({msg:"Unauthorized acces"});
      // send mail with defined transport object
     const info = await transporter.sendMail({
         from: '"Hai 👻" <hai@gmail.com>', // sender address
@@ -89,7 +113,7 @@ export async function verifyEmail(req,res) {
     });
     // console.log("Message sent: %s", info.messageId);
     // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
-    userSchema.create({email,account:"new"}).then(()=>{
+    userSchema.create({email}).then(()=>{
         return res.status(201).send({msg:"Confirmation mail succefully sent",email});
     }).catch((error)=>{
         return res.status(404).send({msg:"Error occured"})
@@ -97,18 +121,18 @@ export async function verifyEmail(req,res) {
 }
 export async function signUp(req,res) {
     try {
-        const {...user}=req.body;
+        let id;
         const {email,username,password,cpassword}=req.body;
-        console.log(email,username,password,cpassword);
         if(!(email&&username&&password&&cpassword))
             return res.status(404).send({msg:"fields are empty"});
         if(password!==cpassword)
             return res.status(404).send({msg:"password not matched"})
         userSchema.findOne({email:email}).then((e)=>{
-            console.log(e);
+            id=e._id;
             bcrypt.hash(password,10).then((hashedPassword)=>{
-                console.log(hashedPassword);
-                userSchema.updateOne({email},{$set:{username,password:hashedPassword,account:""}}).then(()=>{
+                userSchema.updateOne({email},{$set:{username,password:hashedPassword}}).then(async()=>{
+                    const set=await profileSchema.create({userId:id})
+                    console.log(set);
                     return res.status(201).send({msg:"success"});
                 }).catch((error)=>{
                     return res.status(404).send({msg:"Not registered"})
@@ -138,7 +162,25 @@ export async function signIn(req,res) {
     if(success!==true)
         return res.status(404).send({msg:"email or password is invalid"})
     //generate token using sign(JWT key)
-    const token=await sign({userId:user._id},process.env.JWT_KEY,{expiresIn:"5s"});
+    const token=await sign({userId:user._id},process.env.JWT_KEY,{expiresIn:"24h"});
     console.log(token);
     return res.status(200).send({msg:"Succefully logged in",token})
+}
+export async function addPost(req,res) {
+    try {
+    const {...post}=req.body;
+    const data=await postSchema.create({...post});
+    res.status(201).send({msg:"Post Added"});
+    } catch (error) {
+        res.status(404).send({msg:"error"})
+    }
+}
+export async function getPost(req,res) {
+    try {
+        const id=req.user.userId;
+        const post=await postSchema.find({userId:id});
+    res.status(200).send(post);
+    } catch (error) {
+        res.status(404).send({msg:"error"})
+    }
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {useNavigate,Link} from 'react-router-dom';
-import '../css/Signup.scss'; // Import the CSS for styling
+import axios from 'axios'
+import './Signup.scss'; 
 
 function Signup() {
   const navigate=useNavigate();
@@ -11,9 +12,6 @@ function Signup() {
       password:"",
       cpassword:"",
     })
-    
-    
-    
   const handleChange=(e)=>{
     // console.log(e.target.value);
     setUser((pre)=>({...pre,[e.target.name]:e.target.value}))
@@ -37,7 +35,6 @@ function Signup() {
       alert(result.msg)
     }
   };
-  console.log(user);
   
   return (
     <div className="Signup">
