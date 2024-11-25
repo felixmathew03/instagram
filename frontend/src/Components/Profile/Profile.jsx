@@ -71,8 +71,7 @@ const Profile = ({setUser,setProfile}) => {
         </div>
         <div className="posts">
           {posts.map((post)=> <div className='post' key={post._id}>
-              <img src={post.photo} alt="" />
-             
+              <img src={post.photos[0]} alt="" />
             </div>
             )}
         </div>

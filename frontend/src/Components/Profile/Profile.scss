@@ -53,6 +53,8 @@
     .right{
         width: 65%;
         height: 100%;
+        
+
         .add{
             margin-top: 2%;
             width: 80%;
@@ -74,6 +76,7 @@
             justify-content: start;
             gap: 15px;
             flex-wrap: wrap;
+            overflow-y: scroll;
         }
         .post{
             margin-top: 2%;
