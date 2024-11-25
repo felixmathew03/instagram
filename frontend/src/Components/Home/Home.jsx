@@ -15,8 +15,13 @@ const Home = ({setUser,setProfile}) => {
       const res=await axios.get("http://localhost:3000/api/home",{headers:{"Authorization":`Bearer ${value}`}})
     if (res.status==200) {
       // setUserName(res.data.username);
+      
+      console.log(res.data);
       setUser(res.data.username);
-      setProfile(res.data.profile.profile);
+     
+      if(res.data.profile)
+        setProfile(res.data.profile.profile);
+      
     }else if (res.status==403){
       alert(res.data.msg);
       navigate('/login')

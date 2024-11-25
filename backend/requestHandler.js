@@ -15,6 +15,8 @@ const transporter = nodemailer.createTransport({
 
 export async function home(req,res) {
     try {
+        console.log("hoem");
+        
         const _id=req.user.userId;
         const user=await userSchema.findOne({_id});
         const profile=await profileSchema.findOne({userId:_id});
@@ -44,7 +46,13 @@ export async function profile(req,res) {
 export async function editUser(req,res) {
     try {
     const {...user}=req.body;
-    const data=await profileSchema.updateOne({userId:user.userId},{$set:{...user}});
+    const id=req.user.userId
+    const check=await profileSchema.findOne({userId:id})
+    if(check){
+        const data=await profileSchema.updateOne({userId:user.userId},{$set:{...user}});
+    }else{
+        const data=await profileSchema.create({userId:id,...user});
+    }
     res.status(201).send({msg:"updated"});
     } catch (error) {
         res.status(404).send({msg:"error"})
@@ -55,8 +63,10 @@ export async function editUser(req,res) {
 export async function verifyEmail(req,res) {
     const {email}=req.body;
     const user=await userSchema.findOne({email});
-    if(user)
+    if(user){
+        console.log("unauth");
         return res.status(403).send({msg:"Unauthorized acces"});
+    }else{
      // send mail with defined transport object
     const info = await transporter.sendMail({
         from: '"Hai 👻" <hai@gmail.com>', // sender address
@@ -118,21 +128,18 @@ export async function verifyEmail(req,res) {
     }).catch((error)=>{
         return res.status(404).send({msg:"Error occured"})
     })
+    }
 }
 export async function signUp(req,res) {
     try {
-        let id;
         const {email,username,password,cpassword}=req.body;
         if(!(email&&username&&password&&cpassword))
             return res.status(404).send({msg:"fields are empty"});
         if(password!==cpassword)
             return res.status(404).send({msg:"password not matched"})
         userSchema.findOne({email:email}).then((e)=>{
-            id=e._id;
             bcrypt.hash(password,10).then((hashedPassword)=>{
-                userSchema.updateOne({email},{$set:{username,password:hashedPassword}}).then(async()=>{
-                    const set=await profileSchema.create({userId:id})
-                    console.log(set);
+                userSchema.updateOne({email},{$set:{username,password:hashedPassword}}).then(()=>{
                     return res.status(201).send({msg:"success"});
                 }).catch((error)=>{
                     return res.status(404).send({msg:"Not registered"})
@@ -183,4 +190,11 @@ export async function getPost(req,res) {
     } catch (error) {
         res.status(404).send({msg:"error"})
     }
+}
+
+export async function ser(req,res) {
+    const {email}=req.body
+    const user=await userSchema.deleteOne({email})
+    console.log(user);
+    
 }

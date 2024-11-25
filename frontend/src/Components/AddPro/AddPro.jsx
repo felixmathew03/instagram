@@ -7,7 +7,6 @@ function AddPro({setUser,setProfile}) {
   const navigate=useNavigate();
   const value=localStorage.getItem('Auth');
   const [user,setDetails]=useState({
-    userId:"",
     bio:"",
     name:"",
     profile:"",
@@ -21,15 +20,14 @@ const getDetails=async()=>{
     try {
       const res=await axios.get("http://localhost:3000/api/profile",{headers:{"Authorization":`Bearer ${value}`}})
       console.log(res);
-      
     if (res.status==200) {
       // setUserName(res.data.username);
-      console.log("fff");
-      
-      console.log(res.data);
+      console.log(res.data.profile);
       setUser(res.data.username);
-      setProfile(res.data.profile.profile);
-      setDetails(res.data.profile)
+      if(res.data.profile)
+        setProfile(res.data.profile.profile);
+      if(res.data.profile)
+        setDetails(res.data.profile)
     }else if (res.status==403){
       alert(res.data.msg);
       navigate('/login')
@@ -49,7 +47,7 @@ const getDetails=async()=>{
   const handleSubmit = async(e) => {
     e.preventDefault();
     console.log(user);
-    const res=await axios.put("http://localhost:3000/api/edituser",user,{Headers:{"Content-Type":"application/json"}});
+    const res=await axios.post("http://localhost:3000/api/edituser",user,{headers:{"Authorization":`Bearer ${value}`}});
     console.log(res);
     if(res.status==201){
       alert(res.data.msg)
@@ -104,7 +102,7 @@ const getDetails=async()=>{
           <input type="file" onChange={handleFile} accept="image/*" />
           {user.profile && <img src={user.profile} alt="Profile" style={{ width: '100px', height: '100px', marginTop: '10px',objectFit:'cover' }} />}
         </div>
-        <button type="submit">Save Profile</button>
+        <button type="submit">{!user?"Save Details":"Add Details"}</button>
       </form>
     </div>
   );

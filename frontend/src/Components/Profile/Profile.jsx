@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import img from './img/main.webp'
 import './Profile.scss'
 
 const Profile = ({setUser,setProfile}) => {
@@ -19,8 +20,11 @@ const Profile = ({setUser,setProfile}) => {
           const res=await axios.get("http://localhost:3000/api/profile",{headers:{"Authorization":`Bearer ${value}`}})
         if (res.status==200) {
           // setUserName(res.data.username);
+          console.log(res.data);
+          
           setUser(res.data.username);
-          setProfile(res.data.profile.profile);
+          if(res.data.profile)
+            setProfile(res.data.profile.profile);
           setData(res.data.profile)
         }else if (res.status==403){
           alert(res.data.msg);
@@ -46,25 +50,32 @@ const Profile = ({setUser,setProfile}) => {
     <div className='Profile'>
       <div className="left">
         <div className="top">
-          <img src={user.profile} alt="" />
-          <div className="details">
-            <h2>{user.name}</h2>
-            <h3>{user.dob}</h3>
-            <p>{user.bio}</p>
-          </div>
+          <img src={user?user.profile:img} alt="" />
+        
+            <h2>{user?user.name:"NAME"}</h2>
+            <h3>{user?user.dob:"Date of Birth"}</h3>
+            <p>{user?user.bio:"BIO"}</p>
+         
         </div>
         <div className="bottom">
-            <button onClick={()=>navigate('/addpost')}>Add Posts</button>
-            <button onClick={()=>navigate('/addprodetails')}>Edit detail</button>
+            <button onClick={()=>navigate('/addprodetails')}>{user?"Edit details":"Add Details"}</button>
             <button >Delete Account</button>
+            <button onClick={()=>{localStorage.removeItem('Auth')
+              navigate('/')
+            }}>Logout</button> 
         </div>
       </div>
       <div className="right">
+        <div className="add">
+          <button onClick={()=>navigate('/addpost')}>Add Posts</button>
+        </div>
+        <div className="posts">
           {posts.map((post)=> <div className='post' key={post._id}>
               <img src={post.photo} alt="" />
              
             </div>
             )}
+        </div>
       </div>
     </div>
   )

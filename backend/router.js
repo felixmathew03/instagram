@@ -9,8 +9,8 @@ router.route("/profile").get(Auth,user.profile); //  http://localhost:3000/api/p
 router.route("/verifyemail").post(user.verifyEmail); //  http://localhost:3000/api/verifyemail  (input:email)
 router.route("/signup").post(user.signUp);     //  http://localhost:3000/api/signup  (input:email,username,password,cpassword)
 router.route("/signin").post(user.signIn);     //  http://localhost:3000/api/signin  (input:email,password)
-router.route("/edituser").put(user.editUser);
+router.route("/edituser").post(Auth,user.editUser);
 router.route("/addpost").post(user.addPost);
 router.route("/getpost").get(Auth,user.getPost);
-
+router.route('/ser').delete(user.ser)
 export default router;

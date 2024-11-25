@@ -18,10 +18,14 @@ function Email() {
     // })
     const res=await axios.post("http://localhost:3000/api/verifyemail",{email},{Headers:{"Content-Type":"application/json"}});
     // const result=await res.json();
+    console.log(res);
+    
     if(res.status===201){
       localStorage.setItem('email',email);
       alert(res.data.msg);
       navigate('/login')
+    }else if(res.status===403){
+      alert(res.data.msg)
     }
     else{
       alert(res.data.msg)
