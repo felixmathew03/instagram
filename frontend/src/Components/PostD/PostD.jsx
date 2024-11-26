@@ -17,30 +17,25 @@ const PostD = ({setUser,setProfile}) => {
         if(value!==null){
         const res=await axios.get(`http://localhost:3000/api/postdetails/${id}`,{headers:{"Authorization":`Bearer ${value}`}})
         // console.log(res);
-        res.data.post.photos.map(photo=>{
-          console.log(photo);
-        })
-        if (res.status==200) {
-          console.log(res.data.post);
-          setUser(res.data.username);
-            setProfile(res.data.profile);
-          setPosts({...res.data.post})
-          setPhotos([...res.data.post.photos])
-        }else{
-          alert(res.data.msg);
-          // navigate('/login')
-        }
+            if (res.status==200) {
+              console.log(res.data.post);
+              setUser(res.data.username);
+              setProfile(res.data.profile);
+              setPosts({...res.data.post});
+              setPhotos([...res.data.post.photos])
+            }else{
+              alert(res.data.msg);
+              navigate('/login')
+            }
         }
         else{
-          // navigate('/login')
+          navigate('/login')
         }
       }
       catch (error) {
        console.log("error");
-       // navigate('/login')
      }
     }
-    console.log("=========================================");
   return (
     <div className='PostD'>
       <div className="left">

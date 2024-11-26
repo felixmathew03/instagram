@@ -42,9 +42,9 @@ const Profile = ({setUser,setProfile}) => {
         }
       }
     const getPosts=async()=>{
-      const res=await axios.get("http://localhost:3000/api/getPost",{headers:{"Authorization":`Bearer ${value}`}})
-      // console.log(res.data);
-      setPost(res.data)
+      const res=await axios.get("http://localhost:3000/api/getpost",{headers:{"Authorization":`Bearer ${value}`}})
+      console.log(res.data);
+      setPost(res.data);
     }
   return (
     <div className='Profile'>

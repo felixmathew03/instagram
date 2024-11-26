@@ -6,9 +6,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom:2px double rgb(195, 188, 188) ;
+
     h2{
         font-family: "Dancing Script", cursive;
         font-size: 2rem;
+        a{
+            text-decoration: none;
+            color: rgb(13, 1, 83);
+        }
     }
     .profile{
         display: flex;
@@ -19,6 +25,7 @@
             width: 35px;
             object-fit: cover;
             border-radius: 50%;
+            cursor: pointer;
         }
         
     }

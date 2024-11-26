@@ -6,51 +6,43 @@ import './Post.scss'
 const Post = ({setUser,setProfile}) => {
     const navigate=useNavigate();
   const value=localStorage.getItem('Auth');
-  const [photos,setPhotos]=useState([]);
+  // const [photos,setPhotos]=useState([]);
   const [postTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   const [postDate, setCurrentDate] = useState(new Date().toLocaleDateString());
   const [post,setPost]=useState({
     userId:"",
-    description:""
+    description:"",
+    photos:[]
   });
   useEffect(()=>{
     getDetails();
   },[])
 const getDetails=async()=>{
+  try {
     if(value!==null){
-    try {
       const res=await axios.get("http://localhost:3000/api/profile",{headers:{"Authorization":`Bearer ${value}`}})
-      console.log(res);
-    if (res.status==200) {
-      // setUserName(res.data.username);
-      console.log("fff");
-      
-      console.log(res.data);
-      setUser(res.data.username);
-      setProfile(res.data.profile.profile);
-      setPost({userId:res.data.profile.userId})
-    }else if (res.status==403){
-      alert(res.data.msg);
-    //   navigate('/login')
-    }
+      if (res.status==200) {
+        setUser(res.data.username);
+        setProfile(res.data.profile.profile);
+        setPost({userId:res.data.profile.userId})
+      }
+      else{
+        alert(res.data.msg);
+        navigate('/login')
+      }
+    } 
     else{
-    //   navigate('/login')
+      navigate('/login')
     }
-    } catch (error) {
+  }catch (error) {
       console.log("error");
-    //   navigate('/login')
-    }
-    }else{
-    //   navigate('/login')
     }
   }
-    // Handle form submit
   const handleSubmit = async(e) => {
     e.preventDefault();
     setCurrentTime(new Date().toLocaleTimeString())
-    console.log(postDate);
     console.log(post);
-    const res=await axios.post("http://localhost:3000/api/addpost",{...post,photos,postTime,postDate},{Headers:{"Content-Type":"application/json"}});
+    const res=await axios.post("http://localhost:3000/api/addpost",{...post,postTime,postDate},{headers:{"Content-Type":"application/json"}});
     console.log(res);
     if(res.status==201){
       alert(res.data.msg)
@@ -59,21 +51,16 @@ const getDetails=async()=>{
       alert(res.data.msg)
     }
   };
-  // console.log(user);
-  
   const handleChange=(e)=>{
-    // console.log(e.target.value);
     setPost((pre)=>({...pre,[e.target.name]:e.target.value}))
-    
   }
-  // Handle image change
   const handleFile=async(e)=>{
-    const arr=Object.values(e.target.files)
-    console.log(arr);
-    arr.map(async(m)=>{
-      const photo=await convertToBase64(m)
-      setPhotos((pre)=>([...pre,photo]))
-    })
+    let arr=[]
+    Object.values(e.target.files).map(async(p)=>{
+      const photo=await convertToBase64(p)
+      arr.push(photo)
+    });
+    setPost((pre)=>({...pre,photos:arr}))
   }
   function convertToBase64(file) {
     return new Promise((resolve,reject)=>{
@@ -94,7 +81,7 @@ const getDetails=async()=>{
       <div>
           <label>Photo:</label>
           <input type="file" onChange={handleFile} accept="image/*" multiple />
-          {post.photo && <img src={post.photo} alt="Profile" style={{ width: '100px', height: '100px', marginTop: '10px',objectFit:'cover' }} />}
+          {/* {post.photos && <img src={post.photos} alt="Profile" style={{ width: '100px', height: '100px', marginTop: '10px',objectFit:'cover' }} />} */}
         </div>
         <div>
           <label>Description:</label>

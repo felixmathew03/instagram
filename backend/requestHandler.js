@@ -15,8 +15,6 @@ const transporter = nodemailer.createTransport({
 
 export async function home(req,res) {
     try {
-        console.log("hoem");
-        
         const _id=req.user.userId;
         const user=await userSchema.findOne({_id});
         const profile=await profileSchema.findOne({userId:_id});
@@ -207,6 +205,15 @@ export async function postDetails(req,res) {
         const user=await userSchema.findOne({_id:id},{username:1})
         const profile=await profileSchema.findOne({userId:id},{profile:1})
         return res.status(200).send({username:user.username,profile:profile.profile,post});
+    } catch (error) {
+        res.status(404).send({msg:"error"})
+    }
+}
+
+export async function getPosts(req,res) {
+    try {
+        const post=await postSchema.find({});
+        return res.status(200).send(post);
     } catch (error) {
         res.status(404).send({msg:"error"})
     }
