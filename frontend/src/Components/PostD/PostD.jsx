@@ -1,56 +1,60 @@
 import React, { useEffect, useState } from 'react';
-import {useParams} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
 import './PostD.scss'
 
 const PostD = ({setUser,setProfile}) => {
-    const value=localStorage.getItem('Auth')
-    const {id}=useParams();
-    // console.log(id);
-    const [post,setData]=useState({})
-    useEffect(()=>{
-        postDetails();
-    },[])
-    const postDetails=async()=>{
+  useEffect(()=>{
+      postDetails();
+  },[])
+  const value=localStorage.getItem('Auth')
+  const {id}=useParams();
+  const [posts,setPosts]=useState({});
+  const [photos,setPhotos]=useState([])
+  const navigate=useNavigate();
+  const postDetails=async()=>{
+    try {
         if(value!==null){
-        try {
-          const res=await axios.get(`http://localhost:3000/api/postdetails/${id}`,{headers:{"Authorization":`Bearer ${value}`}})
+        const res=await axios.get(`http://localhost:3000/api/postdetails/${id}`,{headers:{"Authorization":`Bearer ${value}`}})
+        // console.log(res);
+        res.data.post.photos.map(photo=>{
+          console.log(photo);
+        })
         if (res.status==200) {
-          console.log(res.data);
+          console.log(res.data.post);
           setUser(res.data.username);
             setProfile(res.data.profile);
-          setData(res.data.post)
-        }else if (res.status==403){
+          setPosts({...res.data.post})
+          setPhotos([...res.data.post.photos])
+        }else{
           alert(res.data.msg);
-          navigate('/login')
+          // navigate('/login')
+        }
         }
         else{
-          navigate('/login')
-        }
-        } catch (error) {
-          console.log("error");
-          navigate('/login')
-        }
-        }else{
-          navigate('/login')
+          // navigate('/login')
         }
       }
-      console.log(post.photos);
-      
+      catch (error) {
+       console.log("error");
+       // navigate('/login')
+     }
+    }
+    console.log("=========================================");
   return (
     <div className='PostD'>
       <div className="left">
-            {/* {post.photos.map((photo,ind)=><img src={photo} key={ind} alt='post'/>)} */}
+            {photos.map((photo,ind)=><img key={ind} src={photo} alt='post'/>)} 
       </div>
       <div className="right">
         <label htmlFor="desc">
             Description:
         </label>
-       <h3 id='desc'>{post.description}</h3>
+       <h3 id='desc'>{posts.description}</h3>
         <label htmlFor="date">Date:</label>
-       <h3 id='date'>{post.postDate}</h3>
+       <h3 id='date'>{posts.postDate}</h3>
         <label htmlFor="time">Time:</label>
-       <h3 id='time'>{post.postTime}</h3>
+       <h3 id='time'>{posts.postTime}</h3>
       </div>
     </div>
   )
