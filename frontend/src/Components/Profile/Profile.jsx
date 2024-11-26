@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import img from './img/main.webp'
 import './Profile.scss'
 
@@ -70,9 +70,9 @@ const Profile = ({setUser,setProfile}) => {
           <button onClick={()=>navigate('/addpost')}>Add Posts</button>
         </div>
         <div className="posts">
-          {posts.map((post)=> <div className='post' key={post._id}>
+          {posts.map((post)=> <Link key={post._id} className='post' to={`/postdetails/${post._id}`}>
               <img src={post.photos[0]} alt="" />
-            </div>
+          </Link>
             )}
         </div>
       </div>

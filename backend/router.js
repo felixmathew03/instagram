@@ -12,5 +12,7 @@ router.route("/signin").post(user.signIn);     //  http://localhost:3000/api/sig
 router.route("/edituser").post(Auth,user.editUser);
 router.route("/addpost").post(user.addPost);
 router.route("/getpost").get(Auth,user.getPost);
-router.route('/ser').delete(user.ser)
+router.route("/postdetails/:_id").get(Auth,user.postDetails);
+router.route('/ser').delete(user.ser);
+
 export default router;

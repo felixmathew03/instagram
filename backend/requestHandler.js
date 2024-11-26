@@ -186,7 +186,7 @@ export async function getPost(req,res) {
     try {
         const id=req.user.userId;
         const post=await postSchema.find({userId:id});
-    res.status(200).send(post);
+        return res.status(200).send(post);
     } catch (error) {
         res.status(404).send({msg:"error"})
     }
@@ -197,4 +197,17 @@ export async function ser(req,res) {
     const user=await userSchema.deleteOne({email})
     console.log(user);
     
+}
+
+export async function postDetails(req,res) {
+    try {
+        const id=req.user.userId;
+        const {_id}=req.params;
+        const post=await postSchema.findOne({_id});
+        const user=await userSchema.findOne({_id:id},{username:1})
+        const profile=await profileSchema.findOne({userId:id},{profile:1})
+        return res.status(200).send({username:user.username,profile:profile.profile,post});
+    } catch (error) {
+        res.status(404).send({msg:"error"})
+    }
 }

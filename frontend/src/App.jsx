@@ -8,6 +8,7 @@ import Nav from './Components/Nav/Nav'
 import Profile from './Components/Profile/Profile';
 import AddPro from './Components/AddPro/AddPro';
 import Post from './Components/Post/Post';
+import PostD from './Components/PostD/PostD';
 
 const App = () => {
   const [user,setUser]=useState("");
@@ -23,6 +24,7 @@ const App = () => {
         <Route path='/profile' element={<Profile  setUser={setUser} setProfile={setProfile}/>}/>
         <Route path='/addprodetails' element={<AddPro  setUser={setUser} setProfile={setProfile}/>}/>
         <Route path='/addpost' element={<Post  setUser={setUser} setProfile={setProfile}/>}/>
+        <Route path='/postdetails/:id' element={<PostD  setUser={setUser} setProfile={setProfile}/>}/>
       </Routes>
     </BrowserRouter>
   )
