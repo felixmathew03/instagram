@@ -14,6 +14,7 @@ router.route("/addpost").post(user.addPost);
 router.route("/getpost").get(Auth,user.getPost);
 router.route("/getposts").get(user.getPosts);
 router.route("/postdetails/:_id").get(Auth,user.postDetails);
+router.route('/addlike').post(Auth,user.addLike);
 router.route('/ser').delete(user.ser);
 
 export default router;

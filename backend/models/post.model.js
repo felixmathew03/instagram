@@ -5,7 +5,8 @@ const postSchema=new mongoose.Schema({
     description:{type:String},
     photos:{type:Array},
     postDate:{type:String},
-    postTime:{type:String}
+    postTime:{type:String},
+    likes:[]
 })
 
 export default mongoose.model.Posts || mongoose.model("Post",postSchema);

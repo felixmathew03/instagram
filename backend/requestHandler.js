@@ -20,7 +20,7 @@ export async function home(req,res) {
         const profile=await profileSchema.findOne({userId:_id});
         if(!user)
             return res.status(403).send({msg:"Unauthorized acces"});
-        res.status(200).send({username:user.username,profile})
+        res.status(200).send({username:user.username,profile,id:_id})
         
     } catch (error) {
         res.status(404).send({msg:"error"})
@@ -174,8 +174,9 @@ export async function signIn(req,res) {
 export async function addPost(req,res) {
     try {
     const {...post}=req.body;
-    const data=await postSchema.create({...post});
-    res.status(201).send({msg:"Post Added"});
+    const likes=[];
+    const data=await postSchema.create({...post,likes});
+    return res.status(201).send({msg:"Post Added"});
     } catch (error) {
         res.status(404).send({msg:"error"})
     }
@@ -217,4 +218,10 @@ export async function getPosts(req,res) {
     } catch (error) {
         res.status(404).send({msg:"error"})
     }
+}
+export async function addLike(req,res) {
+    const {id}=req.body;
+    const uid=req.user.userId;
+    const update=await postSchema.updateOne( { _id: id },  { $push: { likes: uid } })
+    return res.status(201).send({msg:"success"})
 }
